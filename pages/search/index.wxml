@@ -1,0 +1,21 @@
+<view class="content" scroll-y="true">
+  <view class="search-bar">
+    <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+    <input name="keyword" placeholder="请输入关键词" bindinput="inputKeyword"/>
+    <button type="primary" size="mini" bindtap="query">查询</button>
+  </view>
+  <view class="header-bg"></view>
+  <view class="book-content">
+    <view wx:for="{{infoList}}">
+      <view class="book-list">
+        <view class="book-info">
+          <view class="book-info-style">
+            <view class="font-break">原告:{{item.name1}}</view>
+            <view class="font-break">被告:{{item.name2}}\n</view>
+            <view class="col-4 font-break">事件:{{item.event}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

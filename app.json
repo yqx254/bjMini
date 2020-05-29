@@ -1,0 +1,33 @@
+{
+  "pages":[
+    "pages/index/index",
+    "pages/search/index",
+    "pages/input/index",
+    "pages/logs/logs"
+  ],
+  "tabBar": {
+    "list": [
+      {
+        "iconPath": "assets/img/search-1.png",
+        "selectedIconPath": "assets/img/search.png",
+        "pagePath": "pages/search/index",
+        "text": "查询"
+      },
+      {
+        "iconPath": "assets/img/dy-1.png",
+        "selectedIconPath": "assets/img/dy.png",
+        "pagePath": "pages/input/index",
+        "text": "录入"
+      }
+    ]
+  },  
+  "window":{
+    "backgroundTextStyle":"light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "高大上的信息管理系统",
+    "navigationBarTextStyle":"black",
+    "enablePullDownRefresh": false
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}
