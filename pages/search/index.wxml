@@ -12,7 +12,7 @@
           <view class="book-info-style">
             <view class="font-break">原告:{{item.name1}}</view>
             <view class="font-break">被告:{{item.name2}}\n</view>
-            <view class="col-4 font-break">事件:{{item.event}}</view>
+            <view class="col-4 font-break">编号:{{item.code}}</view>
           </view>
         </view>
       </view>
