@@ -10,18 +10,10 @@
                 </picker>  
             </view>   
         </view>         
-        <view wx:if="{{code}}" class="weui-cells weui-cells_after-title">
-            <view class="weui-cell ">
-                <view class="weui-cell__hd">
-                    <view class="weui-label" >编号:</view>
-                    <input class="weui-input" value="{{code}}" disabled="true"/>                                       
-                </view>                
-            </view>
-        </view>
         <view class="weui-cells weui-cells_after-title">
             <view class="weui-cell ">
                 <view class="weui-cell__hd">
-                    <view class="weui-label" >原告:</view>
+                    <view class="weui-label" >委托人:</view>
                 </view>        
                 <button class="mini-btn" size="mini" type="primary" bindtap="addAccuser">添加</button>
                 <button class="mini-btn" size="mini" type="warn" bindtap="deleteAccuser">删除</button>
@@ -30,30 +22,85 @@
                 <view class="container"> </view>
                 <view class="weui-cell weui-cell_input">
                     <view class="weui-cell__bd">
-                        <input class="weui-input" id="accuser-{{index}}" bindinput="setAccuser" placeholder="请输入原告姓名" />
+                        <input class="weui-input" id="accuser-{{index}}" value="{{item.accuserName}}" bindinput="setAccuser" placeholder="请输入姓名" />
                     </view>
+                    <picker bindchange="bindTypeChangeA" id="accuserType-{{index}}" value="{{item.typeid}}" range="{{typeMap}}" range-key="name" data-id='{{typeMap[item.typeid].id}}' mode = "selector">  
+                        <view class="picker">  
+                       身份：{{typeMap[item.typeid].name}}
+                        </view>  
+                    </picker>                    
                 </view>                
             </view>
-            <view class="weui-cell ">
+            <view wx:if="{{categoryIndex == 0 || categoryIndex == 2}}" class="weui-cell ">
                 <view class="weui-cell__hd">
-                    <view class="weui-label" >被告:</view>
+                    <view class="weui-label" >对方当事人:</view>
                 </view>        
                 <button class="mini-btn" size="mini" type="primary" bindtap="addAccused">添加</button>
                 <button class="mini-btn" size="mini" type="warn" bindtap="deleteAccused">删除</button>                
             </view>            
-            <view wx:for="{{accusedInfo.accused}}" wx:key="key" class="forItemBorder">
-                <view class="container"> </view>
-                <view class="weui-cell weui-cell_input">            
-                    <view class="weui-cell__bd">
-                        <input class="weui-input"  id="accused-{{index}}" bindinput="setAccused" placeholder="请输入被告姓名" />
-                    </view>
-                </view>            
+        <view wx:if="{{categoryIndex == 0 || categoryIndex == 2}}" wx:for="{{accusedInfo.accused}}" wx:key="key" class="forItemBorder">
+            <view class="container"> </view>
+            <view class="weui-cell weui-cell_input">            
+                <view class="weui-cell__bd">
+                    <input class="weui-input"  id="accused-{{index}}" bindinput="setAccused" placeholder="请输入姓名" />
+                </view>
+                <picker bindchange="bindTypeChangeD" id="accusedType-{{index}}" value="{{item.typeid}}" range="{{typeMap}}" range-key="name" data-id='{{typeMap[item.typeid].id}}' mode = "selector">  
+                    <view class="picker">  
+                    身份：{{typeMap[item.typeid].name}}
+                    </view>  
+                </picker>                        
+            </view>            
+        </view>
+        <view class="weui-cell ">
+            <view class="weui-cell__hd">
+                <view class="weui-label" >承办人:</view>
+            </view>        
+        </view>
+        <view class="weui-cell weui-cell_input">
+            <view class="weui-cell__bd">
+                <input class="weui-input" name="dealer" placeholder="请输入承办人" />
             </view>
+        </view> 
+
+        <view wx:if="{{categoryIndex == 3}}" class="weui-cell ">
+            <view class="weui-cell__hd">
+                <view class="weui-label" >开始时间:</view>
+            </view>        
+        </view>
+        <view wx:if="{{categoryIndex == 3}}" class="weui-cell weui-cell_input">
+            <view class="weui-cell__bd">
+                <input class="weui-input" name="startTime" placeholder="请输入开始时间" />
+            </view>
+        </view> 
+        <view wx:if="{{categoryIndex == 3}}" class="weui-cell ">
+            <view class="weui-cell__hd">
+                <view class="weui-label" >结束时间:</view>
+            </view>        
+        </view>
+        <view wx:if="{{categoryIndex == 3}}" class="weui-cell weui-cell_input">
+            <view class="weui-cell__bd">
+                <input class="weui-input" name="endTime" placeholder="请输入结束时间" />
+            </view>
+        </view>
+
+        <view class="weui-cell ">
+            <view class="weui-cell__hd">
+                <view class="weui-label" >备注:</view>
+                <input class="weui-input" name="remarks" />
+            </view>        
+        </view>              
+        <view wx:if="{{code}}" class="weui-cells weui-cells_after-title">
+            <view class="weui-cell ">
+                <view class="weui-cell__hd">
+                    <view class="weui-label" >案号:</view>
+                    <input class="weui-input" value="{{code}}" disabled="true"/>                                       
+                </view>                
+            </view>
+        </view>                                              
         </view>
       <view class="weui-btn-area">
           <button class="weui-btn" form-type="submit" type="primary">录入</button>
           <button class="weui-btn" form-type="reset" type="default" bindtap="resetForm">重置</button>
       </view>        
     </form>
-
 </view>

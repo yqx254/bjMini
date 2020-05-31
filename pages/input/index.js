@@ -1,11 +1,24 @@
 // pages/input/index.js
 var util = require('../../utils/util');
 
-function accuserDetail(accuserName){
+function accuserDetail(accuserName, typeid){
   this.accuserName = accuserName;
+  if(typeid == null){
+    this.typeid = 1;
+  }
+  else{
+    this.typeid = typeid;
+  }
+  
 }
-function accusedDetail(accusedName){
+function accusedDetail(accusedName, typeid){
   this.accusedName = accusedName;
+  if(typeid == null){
+    this.typeid = 0;
+  }
+  else{
+    this.typeid = typeid;
+  }
 }
 function AccuserInfo(){
   this.accuser = [];
@@ -21,31 +34,69 @@ Page({
    */
   data: {
       code:"",
-      accuserInfo: {},
-      accusedInfo: {},
-      categoryArr : ['民事-M','刑事-X','行政-XZ'],
-      categoryIndex : 0,
+      accuserInfo: {},  //委托人
+      accusedInfo: {},  //对方当事人
+      dealer : "",  //承办人
+      remarks : "", //备注
+      categoryIndex : 0,      
       categoryMap: [
         {
           id: 0,
-          name: '民事-M'
+          name: '民事'
         },
         {
           id: 1,
-          name: '刑事-X'
+          name: '刑事'
         },
         {
           id: 2,
-          name: '行政-XZ'
+          name: '行政'
+        },
+        {
+          id: 3,
+          name: '顾问'
+        },      
+        {
+          id: 4,
+          name: '其他'
         }
       ],
+      typeIndex : 0,
+      typeMap :[
+        {
+          id : 0,
+          name : '原告'
+        },
+        {
+          id : 1,
+          name : '被告'
+        },
+        {
+          id : 2,
+          name : '第三人'
+        },
+        {
+          id : 3,
+          name : '顾问单位'
+        },        
+      ]
   },
   addInfo: function (e) {
+    let c = this.data.code;
+    console.log(c);
+    if(c != null && c != ""){
+      wx.showModal({
+        title: '提示',
+        content: "当前记录已录入，请先重置信息",
+        showCancel: false,
+      })        
+      return;
+    };
     var that = this;
     let accuserInfo = this.data.accuserInfo;
     let accusedInfo = this.data.accusedInfo;
     let categoryIndex = this.data.categoryIndex;
-    if(accuserInfo.accuser[0].accuserName == null || accusedInfo.accused[0].accusedName == null){
+    if(accuserInfo.accuser[0].accuserName == null ){
       wx.showModal({
         title: '提示',
         content: '信息不全啦',
@@ -61,32 +112,60 @@ Page({
       return;
     }
     else{
-      var msg = "原告：";
-      for(var i = 0; i < accuserInfo.accuser.length; i++){
-        console.log(accuserInfo.accuser[i].accuserName);
-        msg += accuserInfo.accuser[i].accuserName + "  "
+      // var msg = "委托人：";
+      // for(var i = 0; i < accuserInfo.accuser.length; i++){
+      //   console.log(accuserInfo.accuser[i].accuserName);
+      //   msg += accuserInfo.accuser[i].accuserName + "-" + accuserInfo.accuser[i].typeid + "   "
+      // }
+      // msg += "被告：";
+      // for(var j = 0; j < accusedInfo.accused.length; j++){
+      //   console.log(accusedInfo.accused[j].accusedName);
+      //   msg += accusedInfo.accused[j].accusedName + "-" + accusedInfo.accused[j].typeid + "   "
+      // }      
+      // msg += "类型：" + categoryIndex;
+      // wx.showModal({
+      //   title: '提示',
+      //   content: msg,
+      //   showCancel: false,
+      // })
+      var code = "BJ";      
+      switch(parseInt(categoryIndex)){
+        case 0:
+          code += "M2020050001";
+          break;
+        case 1:
+          code += "X2020050001";
+          break;
+        case 2:
+          code += "XZ2020050001";
+          break;          
+        case 3:
+          code += "G2020050001";
+          break;         
+        case 4:
+          code += "Q2020050001";
+          break;                    
       }
-      msg += "被告：";
-      for(var j = 0; j < accusedInfo.accused.length; j++){
-        console.log(accusedInfo.accused[j].accusedName);
-        msg += accusedInfo.accused[j].accusedName + "  "
-      }      
-      msg += "类型：" + categoryIndex;
+      this.setData({
+        code : code
+      });
       wx.showModal({
         title: '提示',
-        content: msg,
+        content: "与XXX案件存在利冲，承办人XXX，请核实",
         showCancel: false,
       })      
-      this.setData({
-        code : "BJM20200531003"
-      });
+      console.log(e.detail.value);
       return;
       var options = {
         url: "http://127.0.0.1",
         data: {
-          name1: name1,
-          name2: name2,
-          event: event
+          accuser: accuserInfo,
+          accused: accused,
+          category: categoryIndex,
+          dealer: e.detail.value.dealer,
+          remarks: e.detail.value.remarks,
+          startAt: e.detail.value.startAt,
+          endAt: e.detail.value.endAt,
         }
       };
       wx.request({
@@ -155,6 +234,16 @@ Page({
       accuserInfo: accuserInfo
     });
   },
+  //改原告身份
+  bindTypeChangeA : function(e){
+    let index = parseInt(e.currentTarget.id.replace("accuserType-", ""));
+    let type = e.detail.value;
+    let accuserInfo = this.data.accuserInfo;
+    accuserInfo.accuser[index].typeid = type;
+    this.setData({
+      accuserInfo: accuserInfo
+    });    
+  },
   //加原告
   addAccused: function (e) {
     let accusedInfo = this.data.accusedInfo;
@@ -183,12 +272,23 @@ Page({
       accusedInfo: accusedInfo
     });    
   },
-
+  //改被告身份
+  bindTypeChangeD : function(e){
+    let index = parseInt(e.currentTarget.id.replace("accusedType-", ""));
+    let type = e.detail.value;
+    let accusedInfo = this.data.accusedInfo;
+    accusedInfo.accused[index].typeid = type;
+    this.setData({
+      accusedInfo: accusedInfo
+    });    
+  },
   bindPickerChange : function(e){
     this.setData({
       categoryIndex: e.detail.value
     })    
   },
+
+
   resetForm : function(e){
     var accuserInfo = new AccuserInfo();
     accuserInfo.accuser.push(new accuserDetail());
@@ -196,6 +296,7 @@ Page({
     accusedInfo.accused.push(new accusedDetail());    
     this.setData({
       code:"",
+      categoryIndex : 0,
       accuserInfo: accuserInfo,
       accusedInfo: accusedInfo,
     })  

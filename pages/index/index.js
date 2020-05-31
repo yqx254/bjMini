@@ -55,7 +55,7 @@ Page({
     wx.hideNavigationBarLoading()
 
     wx.switchTab({
-      url: '/pages/search/index'
+      url: '/pages/input/index'
     })
   },
 
@@ -91,11 +91,5 @@ Page({
 
   switchChange: function (e) {
     inputs[e.currentTarget.id] = e.detail.value
-  },
-
-  tapnav: function () {
-    wx.navigateTo({
-      url: '/pages/introduce/introduce'
-    })
   }
 })
