@@ -20,6 +20,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+      code:"",
       accuserInfo: {},
       accusedInfo: {},
       categoryArr : ['民事-M','刑事-X','行政-XZ'],
@@ -76,6 +77,9 @@ Page({
         content: msg,
         showCancel: false,
       })      
+      this.setData({
+        code : "BJM20200531003"
+      });
       return;
       var options = {
         url: "http://127.0.0.1",
@@ -184,6 +188,17 @@ Page({
     this.setData({
       categoryIndex: e.detail.value
     })    
+  },
+  resetForm : function(e){
+    var accuserInfo = new AccuserInfo();
+    accuserInfo.accuser.push(new accuserDetail());
+    var accusedInfo = new AccusedInfo();
+    accusedInfo.accused.push(new accusedDetail());    
+    this.setData({
+      code:"",
+      accuserInfo: accuserInfo,
+      accusedInfo: accusedInfo,
+    })  
   },
   /**
    * 生命周期函数--监听页面加载

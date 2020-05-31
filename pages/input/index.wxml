@@ -10,6 +10,14 @@
                 </picker>  
             </view>   
         </view>         
+        <view wx:if="{{code}}" class="weui-cells weui-cells_after-title">
+            <view class="weui-cell ">
+                <view class="weui-cell__hd">
+                    <view class="weui-label" >编号:</view>
+                    <input class="weui-input" value="{{code}}" disabled="true"/>                                       
+                </view>                
+            </view>
+        </view>
         <view class="weui-cells weui-cells_after-title">
             <view class="weui-cell ">
                 <view class="weui-cell__hd">
@@ -44,7 +52,7 @@
         </view>
       <view class="weui-btn-area">
           <button class="weui-btn" form-type="submit" type="primary">录入</button>
-          <button class="weui-btn" form-type="reset" type="default">重置</button>
+          <button class="weui-btn" form-type="reset" type="default" bindtap="resetForm">重置</button>
       </view>        
     </form>
 
