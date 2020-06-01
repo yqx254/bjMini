@@ -1,18 +1,20 @@
 <view class="content" scroll-y="true">
   <view class="search-bar">
     <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
-    <input name="keyword" placeholder="请输入关键词" bindinput="inputKeyword"/>
+    <input name="keyword" placeholder="输入委托人姓名或案号进行查询" bindinput="inputKeyword"/>
     <button type="primary" size="mini" bindtap="query">查询</button>
-  </view>
-  <view class="header-bg"></view>
+  </view>  
+
+  <view class="header-bg"></view>    
   <view class="book-content">
-    <view wx:for="{{infoList}}">
+    <view wx:for="{{infoList}}" id="{{item.code}}" bindtap="caseDetail">
       <view class="book-list">
         <view class="book-info">
-          <view class="book-info-style">
-            <view class="font-break">原告:{{item.name1}}</view>
-            <view class="font-break">被告:{{item.name2}}\n</view>
-            <view class="col-4 font-break">编号:{{item.code}}</view>
+          <view class="book-info-style ">
+            <view class="font-break">委托人:{{item.accuser}}</view>
+            <view wx:if="{{item.accused != null}}" class="font-break">对方当事人:{{item.accused}}</view>
+            <view class="col-4 font-break">案号:{{item.code}}</view>
+            <view class="col-4 font-break">录入时间:{{item.time}}</view>      
           </view>
         </view>
       </view>

@@ -1,6 +1,16 @@
 <view class="page__bd page__bd_spacing">
     <form bindsubmit="addInfo">
-        <view class="weui-cells__title">信息录入:</view>   
+        <view class="weui-cells__title">案件详情</view>
+        <view class="weui-cells weui-cells_after-title">
+            <view class="weui-cell ">
+                <view class="weui-cell__hd">
+                    <view class="weui-label" >案号:</view>                                                           
+                </view>                
+                <view class="weui-cell__hd">
+                    <input class="weui-input" value="{{code}}" disabled="true"/>
+                </view>
+            </view>
+        </view>
         <view class="weui-cells weui-cells_after-title">
             <view class="weui-cell" >  
                 <picker bindchange="bindPickerChange" value="{{categoryIndex}}" range="{{categoryMap}}" range-key="name" data-id='{{categoryMap[categoryIndex].id}}' mode = "selector">  
@@ -80,7 +90,6 @@
                 <input class="weui-input" name="endTime" placeholder="请输入结束时间" />
             </view>
         </view>
-
         <view class="weui-cell ">
           <view class="weui-cell__hd">
             <view class="weui-label" >备注:</view>
@@ -88,21 +97,10 @@
             <view class="weui-cell__hd">                
                 <textarea name="remarks" value="{{remarks}}" placeholder="请录入备注" maxlength="200" auto-height="true"/>
             </view>        
-        </view>              
-        <view wx:if="{{code}}" class="weui-cells weui-cells_after-title">
-            <view class="weui-cell ">
-                <view class="weui-cell__hd">
-                    <view class="weui-label" >案号:</view>                                                           
-                </view>                
-                <view class="weui-cell__hd">
-                    <input class="weui-input" value="{{code}}" disabled="true"/>
-                </view>                
-            </view>
-        </view>                                              
+        </view>                                                     
         </view>
       <view class="weui-btn-area">
-          <button class="weui-btn" form-type="submit" type="primary">录入</button>
-          <button class="weui-btn" form-type="reset" type="default" bindtap="resetForm">重置</button>
+          <button class="weui-btn" form-type="submit" type="primary">保存</button>
       </view>        
     </form>
 </view>
