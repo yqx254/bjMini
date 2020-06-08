@@ -12,11 +12,11 @@
         <form bindsubmit="formSubmit" bindreset="formReset">
             <view class="section">
                 <view class="section__title">账号</view>
-                <input type="idcard" placeholder="" id="username" value="{{inputs['username']}}" bindinput="inputChange" />
+                <input type="idcard" placeholder="" id="userName" value="{{inputs['userName']}}" bindinput="inputChange" />
             </view>
             <view class="section">
                 <view class="section__title">密码</view>
-                <input password type="text" placeholder="" id="password" value="{{inputs['username']}}" bindinput="inputChange" />
+                <input password type="text" placeholder="" id="password" value="{{inputs['password']}}" bindinput="inputChange" />
             </view>
             <view class="section">
                 <view class="section__title">记住我</view>
