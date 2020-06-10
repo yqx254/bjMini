@@ -59,6 +59,9 @@ Page({
       success: function (res) {
         console.log(res);
         if(res.data.success){
+          let cookieStr = res.header['Set-Cookie'] || res.header['set-cookie'];
+          wx.removeStorageSync("sessionId");
+          wx.setStorageSync("sessionId", cookieStr);          
           page.unloading()
           wx.hideNavigationBarLoading()
           wx.switchTab({

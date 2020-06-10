@@ -7,14 +7,15 @@
 
   <view class="header-bg"></view>    
   <view class="book-content">
-    <view wx:for="{{infoList}}" id="{{item.code}}" bindtap="caseDetail">
+    <view wx:for="{{infoList}}" id="{{item.id}}" bindtap="caseDetail">
       <view class="book-list">
         <view class="book-info">
           <view class="book-info-style ">
-            <view class="font-break">委托人:{{item.accuser}}</view>
-            <view wx:if="{{item.accused != null}}" class="font-break">对方当事人:{{item.accused}}</view>
-            <view class="col-4 font-break">案号:{{item.code}}</view>
-            <view class="col-4 font-break">录入时间:{{item.time}}</view>      
+            <view wx:if="{{item.status == 1}}" class="col-4 font-break">案号:{{item.caseCode}}</view>
+            <view wx:if="{{item.status == 2}}" class="col-4 font-break">案号:{{item.caseCode}}(已结案)</view>
+            <view  class="font-break">委托人:{{item.clientNameShow}}</view>
+            <view wx:if="{{item.opponentName != null && item.opponentName != '' }}" class="font-break">对方当事人:{{item.opponentNameShow}}</view>            
+            <view class="col-4 font-break">录入时间:{{item.createdAtStr}}</view>      
           </view>
         </view>
       </view>

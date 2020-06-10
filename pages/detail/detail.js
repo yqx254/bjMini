@@ -1,5 +1,6 @@
 // pages/input/index.js
 var util = require('../../utils/util');
+var config = require('../../config.js')
 
 function accuserDetail(accuserName, typeid) {
   this.accuserName = accuserName;
@@ -73,119 +74,76 @@ Page({
       },
       {
         id: 2,
-        name: '第三人'
+        name: '原告人'
       },
       {
         id: 3,
+        name: '被告人'
+      },
+      {
+        id: 4,
+        name: '第三人'
+      },
+      {
+        id: 5,
         name: '顾问单位'
       },
     ]
   },
   addInfo: function (e) {
-    let c = this.data.code;
+    let id = this.data.id;
     wx.showToast({ title: '加载中', icon: 'loading', duration: 10000 });    
-    setTimeout(function () {
-      wx.hideToast();
-      wx.showModal({
-        title: '提示',
-        content: "保存成功",
-        showCancel: false,
-      })       
-    }, 1000)
-   
-    return;
     var that = this;
     let accuserInfo = this.data.accuserInfo;
     let accusedInfo = this.data.accusedInfo;
     let categoryIndex = this.data.categoryIndex;
+    let code = this.data.code;
     if (accuserInfo.accuser[0].accuserName == null) {
       wx.showModal({
         title: '提示',
         content: '委托人信息不能为空',
-        showCancel: false,
-        success: function (res) {
-          if (res.confirm) {
-            console.log('点击确定')
-          } else {
-            console.log('点击取消')
-          }
-        }
+        showCancel: false
       })
       return;
     }
     else {
-      // var msg = "委托人：";
-      // for(var i = 0; i < accuserInfo.accuser.length; i++){
-      //   console.log(accuserInfo.accuser[i].accuserName);
-      //   msg += accuserInfo.accuser[i].accuserName + "-" + accuserInfo.accuser[i].typeid + "   "
-      // }
-      // msg += "被告：";
-      // for(var j = 0; j < accusedInfo.accused.length; j++){
-      //   console.log(accusedInfo.accused[j].accusedName);
-      //   msg += accusedInfo.accused[j].accusedName + "-" + accusedInfo.accused[j].typeid + "   "
-      // }      
-      // msg += "类型：" + categoryIndex;
-      // wx.showModal({
-      //   title: '提示',
-      //   content: msg,
-      //   showCancel: false,
-      // })
-      var code = "BJ";
-      switch (parseInt(categoryIndex)) {
-        case 0:
-          code += "M2020050001";
-          break;
-        case 1:
-          code += "X2020050001";
-          break;
-        case 2:
-          code += "XZ2020050001";
-          break;
-        case 3:
-          code += "G2020050001";
-          break;
-        case 4:
-          code += "Q2020050001";
-          break;
-      }
-      this.setData({
-        code: code
-      });
-      wx.showModal({
-        title: '提示',
-        content: "与XXX案件存在利冲，承办人XXX，请核实",
-        showCancel: false,
-      });
-      return;
       var options = {
-        url: "http://127.0.0.1",
+        url: config.serverUrl + "api-case/edit.do",
         data: {
-          accuser: accuserInfo,
-          accused: accused,
-          category: categoryIndex,
+          id: id,
+          accuser: JSON.stringify(accuserInfo['accuser']),
+          accused: JSON.stringify(accusedInfo['accused']),
           dealer: e.detail.value.dealer,
-          remarks: e.detail.value.remarks,
-          startAt: e.detail.value.startAt,
-          endAt: e.detail.value.endAt,
+          remarks: e.detail.value.remarks
         }
       };
       wx.request({
         url: options.url,
         data: options.data ? options.data : {},
-        method: options.method ? options.method : 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
-        header: options.header ? options.header : { 'content-type': 'application/json' }, // 设置请求的 header        
+        method: 'POST', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
+        header: options.header ? options.header : { 'content-type': 'application/x-www-form-urlencoded', 'cookie': wx.getStorageSync("sessionId")  }, // 设置请求的 header
         success: function (res) {
-          wx.showToast({
-            title: '成功',
-            icon: 'succes',
-            duration: 1000,
-            mask: true
-          })
+          wx.hideToast();
+          if(res.data.success){
+            wx.showToast({
+              title: '成功',
+              icon: 'success',
+              duration: 1000,
+              mask: true
+            })
+          }
+          else{
+            wx.showModal({
+              title: '提示',
+              content: res.data.msg,
+              showCancel: false,
+            })
+          }
         },
         fail: function (err) {
           wx.showModal({
             title: '提示',
-            content: '输入： 姓名1：' + options.data.name1 + '   姓名2：' + options.data.name2 + '  事件：' + options.data.event + "; 但是目前没有服务器哦！",
+            content: '服务器开小差，请稍候再试',
             showCancel: false,
           })
           console.log(options.data);
@@ -196,21 +154,41 @@ Page({
     }
   },
   init: function (options) {
+    let id = options.id;
     let that = this;
-    var accuserInfo = new AccuserInfo();
-    accuserInfo.accuser.push(new accuserDetail('张三', 1));
-    var accusedInfo = new AccusedInfo();
-    accusedInfo.accused.push(new accusedDetail('李四', 0));
-    let code = options.code;
-    var dealer = '老律师';
-    var remarks = '好案子，不得了';
-    this.setData({
-      code : code,
-      accuserInfo: accuserInfo,
-      accusedInfo: accusedInfo,
-      dealer : dealer,
-      remarks : remarks
-    });
+    wx.request({
+      url: config.serverUrl + "api-case/detail.do?id=" + id,
+      method: options.method ? options.method : 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
+      header: options.header ? options.header : { 'content-type': 'application/json', 'cookie': wx.getStorageSync("sessionId") }, // 设置请求的 header        
+      success: function (res) {
+        let data = res.data;
+        var accuserInfo = new AccuserInfo();
+        for(var i = 0; i < data.clientNameArr.length; i ++)
+          accuserInfo.accuser.push(new accuserDetail(data.clientNameArr[i], data.clientIdtArr[i]));
+        var accusedInfo = new AccusedInfo();
+        for (var j = 0; j < data.opponentNameArr.length; j++){
+          accusedInfo.accused.push(new accusedDetail(data.opponentNameArr[j], data.opponentIdtArr[j]));
+        }        
+        that.setData({
+          id : data.id,
+          categoryIndex : data.category,
+          code: data.caseCode,
+          accuserInfo: accuserInfo,
+          accusedInfo: accusedInfo,
+          dealer: data.dealer,
+          remarks: data.remarks
+        });
+      },
+      fail: function (err) {
+        var k = options.data.keyword;
+        console.log(k);
+        wx.showModal({
+          title: '提示',
+          content: '服务器开小差，请稍候再试',
+          showCancel: false
+        })
+      }
+    });    
   },
   //加原告
   addAccuser: function (e) {

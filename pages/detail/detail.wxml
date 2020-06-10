@@ -70,7 +70,7 @@
             </view>
         </view> 
 
-        <view wx:if="{{categoryIndex == 3}}" class="weui-cell ">
+        <!-- <view wx:if="{{categoryIndex == 3}}" class="weui-cell ">
             <view class="weui-cell__hd">
                 <view class="weui-label" >开始时间:</view>
             </view>        
@@ -89,7 +89,7 @@
             <view class="weui-cell__bd">
                 <input class="weui-input" name="endTime" placeholder="请输入结束时间" />
             </view>
-        </view>
+        </view> -->
         <view class="weui-cell ">
           <view class="weui-cell__hd">
             <view class="weui-label" >备注:</view>
