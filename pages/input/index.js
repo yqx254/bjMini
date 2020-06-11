@@ -1,5 +1,6 @@
 // pages/input/index.js
 var util = require('../../utils/util');
+var config = require('../../config.js');
 
 function accuserDetail(accuserName, typeid){
   this.accuserName = accuserName;
@@ -62,36 +63,34 @@ Page({
         }
       ],
       typeIndex : 0,
-      typeMap :[
-        {
-          id : 0,
-          name : '原告'
-        },
-        {
-          id : 1,
-          name : '被告'
-        },
-        {
-          id : 2,
-          name : '第三人'
-        },
-        {
-          id : 3,
-          name : '顾问单位'
-        },        
-      ]
+    typeMap: [
+      {
+        id: 0,
+        name: '原告'
+      },
+      {
+        id: 1,
+        name: '被告'
+      },
+      {
+        id: 2,
+        name: '原告人'
+      },
+      {
+        id: 3,
+        name: '被告人'
+      },
+      {
+        id: 4,
+        name: '第三人'
+      },
+      {
+        id: 5,
+        name: '顾问单位'
+      },
+    ]
   },
   addInfo: function (e) {
-    let c = this.data.code;
-    console.log(c);
-    if(c != null && c != ""){
-      wx.showModal({
-        title: '提示',
-        content: "当前记录已录入，请先重置信息",
-        showCancel: false,
-      })        
-      return;
-    };
     var that = this;
     let accuserInfo = this.data.accuserInfo;
     let accusedInfo = this.data.accusedInfo;
@@ -100,97 +99,63 @@ Page({
       wx.showModal({
         title: '提示',
         content: '委托人信息不能为空',
-        showCancel: false,
-        success: function (res) {
-          if (res.confirm) {
-            console.log('点击确定')
-          } else {
-            console.log('点击取消')
-          }
-        }
+        showCancel: false
+      })
+      return;
+    }    
+    else if (e.detail.value.dealer == null || e.detail.value.dealer == ""){
+      wx.showModal({
+        title: '提示',
+        content: '承办人信息不能为空',
+        showCancel: false
       })
       return;
     }
     else{
-      // var msg = "委托人：";
-      // for(var i = 0; i < accuserInfo.accuser.length; i++){
-      //   console.log(accuserInfo.accuser[i].accuserName);
-      //   msg += accuserInfo.accuser[i].accuserName + "-" + accuserInfo.accuser[i].typeid + "   "
-      // }
-      // msg += "被告：";
-      // for(var j = 0; j < accusedInfo.accused.length; j++){
-      //   console.log(accusedInfo.accused[j].accusedName);
-      //   msg += accusedInfo.accused[j].accusedName + "-" + accusedInfo.accused[j].typeid + "   "
-      // }      
-      // msg += "类型：" + categoryIndex;
-      // wx.showModal({
-      //   title: '提示',
-      //   content: msg,
-      //   showCancel: false,
-      // })
-      var code = "BJ";      
-      switch(parseInt(categoryIndex)){
-        case 0:
-          code += "M2020050001";
-          break;
-        case 1:
-          code += "X2020050001";
-          break;
-        case 2:
-          code += "XZ2020050001";
-          break;          
-        case 3:
-          code += "G2020050001";
-          break;         
-        case 4:
-          code += "Q2020050001";
-          break;                    
-      }
-      this.setData({
-        code : code
-      });
-      wx.showModal({
-        title: '提示',
-        content: "录入成功，已生成案号",
-        showCancel: false,
-      });
-            
-      wx.showModal({
-        title: '提示',
-        content: "与XXX案件存在利冲，承办人XXX，请核实",
-        showCancel: false,
-      })      
-      console.log(e.detail.value);
-      return;
       var options = {
-        url: "http://127.0.0.1",
+        url: config.serverUrl + "api-case/add.do",
         data: {
-          accuser: accuserInfo,
-          accused: accused,
+          accuser: JSON.stringify(accuserInfo['accuser']),
+          accused: JSON.stringify(accusedInfo['accused']),
           category: categoryIndex,
           dealer: e.detail.value.dealer,
           remarks: e.detail.value.remarks,
-          startAt: e.detail.value.startAt,
-          endAt: e.detail.value.endAt,
+          // startAt: e.detail.value.startAt,
+          // endAt: e.detail.value.endAt,
         }
       };
       wx.request({
         url: options.url,
         data: options.data ? options.data : {},
-        method: options.method ? options.method : 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
-        header: options.header ? options.header : { 'content-type': 'application/json' }, // 设置请求的 header        
+        method: 'POST', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
+        header: options.header ? options.header : { 'content-type': 'application/x-www-form-urlencoded', 'cookie': wx.getStorageSync("sessionId") }, // 设置请求的 header
         success: function (res) {
-          wx.showToast({
-            title: '成功',
-            icon: 'succes',
-            duration: 1000,
-            mask: true
-          })
+          wx.hideToast();
+          if (res.data.success == "1") {
+            wx.showModal({
+              title: '提示',
+              content: res.data.msg,
+              showCancel: false,
+              success(r){
+                if (r.confirm) {
+                  that.init();
+                  return;
+                }   
+              }          
+            })
+          }
+          else {
+            wx.showModal({
+              title: '提示',
+              content: res.data.msg,
+              showCancel: false,
+            })
+          }
         },
         fail: function (err) {
           wx.showModal({
             title: '提示',
-            content: '输入： 姓名1：' + options.data.name1 +'   姓名2：' + options.data.name2 + '  事件：' + options.data.event + "; 但是目前没有服务器哦！",
+            content: '服务器开小差，请稍候再试',
             showCancel: false,
           })
           console.log(options.data);
@@ -210,6 +175,9 @@ Page({
     this.setData({
       accuserInfo: accuserInfo,
       accusedInfo: accusedInfo,
+      categoryIndex : 0,
+      dealer: "",
+      remarks: ""
     });
   },  
   //加原告
@@ -243,7 +211,7 @@ Page({
   //改原告身份
   bindTypeChangeA : function(e){
     let index = parseInt(e.currentTarget.id.replace("accuserType-", ""));
-    let type = e.detail.value;
+    let type = parseInt(e.detail.value);
     let accuserInfo = this.data.accuserInfo;
     accuserInfo.accuser[index].typeid = type;
     this.setData({
@@ -281,7 +249,7 @@ Page({
   //改被告身份
   bindTypeChangeD : function(e){
     let index = parseInt(e.currentTarget.id.replace("accusedType-", ""));
-    let type = e.detail.value;
+    let type = parseInt(e.detail.value);
     let accusedInfo = this.data.accusedInfo;
     accusedInfo.accused[index].typeid = type;
     this.setData({

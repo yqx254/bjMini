@@ -1,6 +1,6 @@
 // pages/input/index.js
 var util = require('../../utils/util');
-var config = require('../../config.js')
+var config = require('../../config.js');
 
 function accuserDetail(accuserName, typeid) {
   this.accuserName = accuserName;
@@ -124,7 +124,7 @@ Page({
         header: options.header ? options.header : { 'content-type': 'application/x-www-form-urlencoded', 'cookie': wx.getStorageSync("sessionId")  }, // 设置请求的 header
         success: function (res) {
           wx.hideToast();
-          if(res.data.success){
+          if(res.data.success == "1"){
             wx.showToast({
               title: '成功',
               icon: 'success',
@@ -221,7 +221,7 @@ Page({
   //改原告身份
   bindTypeChangeA: function (e) {
     let index = parseInt(e.currentTarget.id.replace("accuserType-", ""));
-    let type = e.detail.value;
+    let type = parseInt(e.detail.value);
     let accuserInfo = this.data.accuserInfo;
     accuserInfo.accuser[index].typeid = type;
     this.setData({
@@ -259,7 +259,7 @@ Page({
   //改被告身份
   bindTypeChangeD: function (e) {
     let index = parseInt(e.currentTarget.id.replace("accusedType-", ""));
-    let type = e.detail.value;
+    let type = parseInt(e.detail.value);
     let accusedInfo = this.data.accusedInfo;
     accusedInfo.accused[index].typeid = type;
     this.setData({
