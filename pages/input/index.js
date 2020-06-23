@@ -91,6 +91,7 @@ Page({
     ]
   },
   addInfo: function (e) {
+    wx.showToast({ title: '加载中', icon: 'loading', duration: 10000 });    
     var that = this;
     let accuserInfo = this.data.accuserInfo;
     let accusedInfo = this.data.accusedInfo;

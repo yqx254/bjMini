@@ -49,13 +49,12 @@ Page({
 
     // simulator.login(inputs['username'], inputs['password'])
     wx.setStorageSync('userName', inputs['userName'])
-    wx.setStorageSync('password', inputs['password'])
     console.log(inputs);
     wx.request({
       url: config.serverUrl + "user/login-mn.do",
       data: inputs ? inputs : {},
-      method: 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
-      header: { 'content-type': 'application/json' }, // 设置请求的 header        
+      method: 'POST', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
+      header: { 'content-type': 'application/x-www-form-urlencoded' }, // 设置请求的 header        
       success: function (res) {
         console.log(res);
         if(res.data.success){
@@ -64,6 +63,7 @@ Page({
           wx.setStorageSync("sessionId", cookieStr);          
           page.unloading()
           wx.hideNavigationBarLoading()
+          wx.setStorageSync('token', res.data.token);
           wx.switchTab({
             url: '/pages/input/index'
           })
@@ -114,8 +114,31 @@ Page({
   onLoad: function () {
     // 调用应用实例的方法获取全局数据
     var that = this
+    that.loading();
+    let token = wx.getStorageSync('token');
+    if (token != null) {
+      inputs['token'] = token;
+      wx.request({
+        url: config.serverUrl + "user/token-access.do",
+        data: inputs ? inputs : {},
+        method: 'POST', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
+        header: { 'content-type': 'application/x-www-form-urlencoded' }, // 设置请求的 header        
+        success: function (res) {
+          console.log(res);
+          if (res.data.success) {
+            let cookieStr = res.header['Set-Cookie'] || res.header['set-cookie'];
+            wx.removeStorageSync("sessionId");
+            wx.setStorageSync("sessionId", cookieStr);
+            that.unloading()
+            wx.hideNavigationBarLoading()
+            wx.switchTab({
+              url: '/pages/input/index'
+            })
+          }
+        }
+      }); 
+    }            
     inputs['userName'] = wx.getStorageSync('userName')
-    inputs['password'] = wx.getStorageSync('password') // 这里没有加密安全性较低
     this.setData({
       inputs: inputs
     })
