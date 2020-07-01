@@ -135,6 +135,9 @@ Page({
               url: '/pages/input/index'
             })
           }
+          else{
+            that.unloading()
+          }
         }
       }); 
     }            
