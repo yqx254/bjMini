@@ -97,6 +97,7 @@ Page({
     let accusedInfo = this.data.accusedInfo;
     let categoryIndex = this.data.categoryIndex;
     if(accuserInfo.accuser[0].accuserName == null ){
+      wx.hideToast();
       wx.showModal({
         title: '提示',
         content: '委托人信息不能为空',
@@ -105,6 +106,7 @@ Page({
       return;
     }    
     else if (e.detail.value.dealer == null || e.detail.value.dealer == ""){
+      wx.hideToast();
       wx.showModal({
         title: '提示',
         content: '承办人信息不能为空',
