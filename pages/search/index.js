@@ -50,12 +50,38 @@ Page({
       keyword: e.detail.value
     })
   },
+
+  caseDetail: function (e) {
+    var code = e.currentTarget.id;
+    wx.navigateTo({
+      url: '../detail/detail?id=' + code
+    });
+  },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady: function () {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow: function () {
+    var keyword = this.data.keyword;
+
     var options = {
       url: config.serverUrl + "api-case/list.do",
+      data: {
+        keyword: encodeURIComponent(keyword)
+      }      
     };
     let that = this;
     wx.request({
@@ -79,30 +105,10 @@ Page({
           title: '提示',
           content: '服务器开小差，请稍候再试',
           showCancel: false
-        })  
+        })
       }
     });
   },
-  caseDetail : function (e) {
-    var code = e.currentTarget.id;
-    wx.navigateTo({
-      url: '../detail/detail?id=' + code
-    });
-  },
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
   /**
    * 生命周期函数--监听页面隐藏
    */
