@@ -11,7 +11,8 @@ Page({
     loadingHidden: true,
     modalHidden: true,
     modalContent: '',
-    inputs: {}
+    inputs: {},
+    showPassword: false
   },
 
   tapLoading: function () {
@@ -149,5 +150,11 @@ Page({
 
   switchChange: function (e) {
     inputs[e.currentTarget.id] = e.detail.value
+  },
+
+  togglePasswordVisible: function () {
+    this.setData({
+      showPassword: !this.data.showPassword
+    })
   }
 })

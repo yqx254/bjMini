@@ -5,7 +5,7 @@ var config = require('../../config.js');
 function accuserDetail(accuserName, typeid){
   this.accuserName = accuserName;
   if(typeid == null){
-    this.typeid = 1;
+    this.typeid = 0;
   }
   else{
     this.typeid = typeid;
@@ -39,7 +39,9 @@ Page({
       accusedInfo: {},  //对方当事人
       dealer : "",  //承办人
       remarks : "", //备注
-      categoryIndex : 0,      
+      categoryIndex : 0,
+      accuserRoleIndex: 0,  // 委托人统一身份索引
+      accusedRoleIndex: 0,  // 对方当事人统一身份索引
       categoryMap: [
         {
           id: 0,
@@ -177,6 +179,8 @@ Page({
       accuserInfo: accuserInfo,
       accusedInfo: accusedInfo,
       categoryIndex : 0,
+      accuserRoleIndex: 0,
+      accusedRoleIndex: 1,
       dealer: "",
       remarks: ""
     });
@@ -185,6 +189,9 @@ Page({
   addAccuser: function (e) {
     let accuserInfo = this.data.accuserInfo;
     accuserInfo.accuser.push(new accuserDetail());
+    var roleIndex = this.data.accuserRoleIndex || 0;
+    var last = accuserInfo.accuser.length - 1;
+    accuserInfo.accuser[last].typeid = roleIndex;
     this.setData({
       accuserInfo: accuserInfo
     });
@@ -211,18 +218,15 @@ Page({
   },
   //改原告身份
   bindTypeChangeA : function(e){
-    let index = parseInt(e.currentTarget.id.replace("accuserType-", ""));
-    let type = parseInt(e.detail.value);
-    let accuserInfo = this.data.accuserInfo;
-    accuserInfo.accuser[index].typeid = type;
-    this.setData({
-      accuserInfo: accuserInfo
-    });    
+    // 保留旧方法（兼容旧结构），当前 UI 已不再使用
   },
-  //加原告
+  //加对方当事人
   addAccused: function (e) {
     let accusedInfo = this.data.accusedInfo;
     accusedInfo.accused.push(new accusedDetail());
+    var roleIndex = this.data.accusedRoleIndex || 0;
+    var last = accusedInfo.accused.length - 1;
+    accusedInfo.accused[last].typeid = roleIndex;
     this.setData({
       accusedInfo: accusedInfo
     });
@@ -249,18 +253,50 @@ Page({
   },
   //改被告身份
   bindTypeChangeD : function(e){
-    let index = parseInt(e.currentTarget.id.replace("accusedType-", ""));
-    let type = parseInt(e.detail.value);
-    let accusedInfo = this.data.accusedInfo;
-    accusedInfo.accused[index].typeid = type;
-    this.setData({
-      accusedInfo: accusedInfo
-    });    
+    // 保留旧方法（兼容旧结构），当前 UI 已不再使用
   },
   bindPickerChange : function(e){
     this.setData({
       categoryIndex: e.detail.value
     })    
+  },
+
+  // 顶部委托人身份选择，统一设置所有委托人的 typeid
+  bindAccuserRoleChange: function (e) {
+    var index = Number(e.detail.value || 0);
+    let accuserInfo = this.data.accuserInfo;
+    if (accuserInfo && accuserInfo.accuser) {
+      for (var i = 0; i < accuserInfo.accuser.length; i++) {
+        accuserInfo.accuser[i].typeid = index;
+      }
+    }
+    this.setData({
+      accuserRoleIndex: index,
+      accuserInfo: accuserInfo
+    });
+  },
+
+  // 顶部对方当事人身份选择，统一设置所有对方当事人的 typeid
+  bindAccusedRoleChange: function (e) {
+    var index = Number(e.detail.value || 0);
+    let accusedInfo = this.data.accusedInfo;
+    if (accusedInfo && accusedInfo.accused) {
+      for (var i = 0; i < accusedInfo.accused.length; i++) {
+        accusedInfo.accused[i].typeid = index;
+      }
+    }
+    this.setData({
+      accusedRoleIndex: index,
+      accusedInfo: accusedInfo
+    });
+  },
+
+  // 点击顶部分类标签切换案件类别
+  tapCategory: function (e) {
+    var index = Number(e.currentTarget.dataset.index || 0);
+    this.setData({
+      categoryIndex: index
+    });
   },
 
 
@@ -272,9 +308,41 @@ Page({
     this.setData({
       code:"",
       categoryIndex : 0,
+      accuserRoleIndex: 0,
+      accusedRoleIndex: 0,
       accuserInfo: accuserInfo,
       accusedInfo: accusedInfo,
     })  
+  },
+
+  // 删除单个委托人条目
+  removeAccuserItem: function (e) {
+    var index = Number(e.currentTarget.dataset.index);
+    let accuserInfo = this.data.accuserInfo;
+    if (!accuserInfo || !accuserInfo.accuser) return;
+    if (accuserInfo.accuser.length > 1) {
+      accuserInfo.accuser.splice(index, 1);
+    } else {
+      accuserInfo.accuser[0] = new accuserDetail();
+    }
+    this.setData({
+      accuserInfo: accuserInfo
+    });
+  },
+
+  // 删除单个对方当事人条目
+  removeAccusedItem: function (e) {
+    var index = Number(e.currentTarget.dataset.index);
+    let accusedInfo = this.data.accusedInfo;
+    if (!accusedInfo || !accusedInfo.accused) return;
+    if (accusedInfo.accused.length > 1) {
+      accusedInfo.accused.splice(index, 1);
+    } else {
+      accusedInfo.accused[0] = new accusedDetail();
+    }
+    this.setData({
+      accusedInfo: accusedInfo
+    });
   },
   /**
    * 生命周期函数--监听页面加载
