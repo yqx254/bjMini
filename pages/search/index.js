@@ -51,6 +51,12 @@ Page({
     })
   },
 
+  clearKeyword: function () {
+    this.setData({
+      keyword: ''
+    });
+  },
+
   caseDetail: function (e) {
     var code = e.currentTarget.id;
     wx.navigateTo({

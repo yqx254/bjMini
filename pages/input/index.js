@@ -2,29 +2,31 @@
 var util = require('../../utils/util');
 var config = require('../../config.js');
 
-function accuserDetail(accuserName, typeid){
+function accuserDetail(accuserName, typeid, id) {
   this.accuserName = accuserName;
-  if(typeid == null){
+  this.id = id || Date.now() + Math.random(); // 添加唯一ID
+  if (typeid == null) {
     this.typeid = 0;
   }
-  else{
+  else {
     this.typeid = typeid;
   }
-  
+
 }
-function accusedDetail(accusedName, typeid){
+function accusedDetail(accusedName, typeid, id) {
   this.accusedName = accusedName;
-  if(typeid == null){
+  this.id = id || Date.now() + Math.random(); // 添加唯一ID
+  if (typeid == null) {
     this.typeid = 0;
   }
-  else{
+  else {
     this.typeid = typeid;
   }
 }
-function AccuserInfo(){
+function AccuserInfo() {
   this.accuser = [];
 }
-function AccusedInfo(){  
+function AccusedInfo() {
   this.accused = [];
 }
 
@@ -34,37 +36,37 @@ Page({
    * 页面的初始数据
    */
   data: {
-      code:"",
-      accuserInfo: {},  //委托人
-      accusedInfo: {},  //对方当事人
-      dealer : "",  //承办人
-      remarks : "", //备注
-      categoryIndex : 0,
-      accuserRoleIndex: 0,  // 委托人统一身份索引
-      accusedRoleIndex: 0,  // 对方当事人统一身份索引
-      categoryMap: [
-        {
-          id: 0,
-          name: '民事'
-        },
-        {
-          id: 1,
-          name: '刑事'
-        },
-        {
-          id: 2,
-          name: '行政'
-        },
-        {
-          id: 3,
-          name: '顾问'
-        },      
-        {
-          id: 4,
-          name: '其他'
-        }
-      ],
-      typeIndex : 0,
+    code: "",
+    accuserInfo: {},  //委托人
+    accusedInfo: {},  //对方当事人
+    dealer: "",  //承办人
+    remarks: "", //备注
+    categoryIndex: 0,
+    accuserRoleIndex: 0,  // 委托人统一身份索引
+    accusedRoleIndex: 0,  // 对方当事人统一身份索引
+    categoryMap: [
+      {
+        id: 0,
+        name: '民事'
+      },
+      {
+        id: 1,
+        name: '刑事'
+      },
+      {
+        id: 2,
+        name: '行政'
+      },
+      {
+        id: 3,
+        name: '顾问'
+      },
+      {
+        id: 4,
+        name: '其他'
+      }
+    ],
+    typeIndex: 0,
     typeMap: [
       {
         id: 0,
@@ -93,12 +95,12 @@ Page({
     ]
   },
   addInfo: function (e) {
-    wx.showToast({ title: '加载中', icon: 'loading', duration: 10000 });    
+    wx.showToast({ title: '加载中', icon: 'loading', duration: 10000 });
     var that = this;
     let accuserInfo = this.data.accuserInfo;
     let accusedInfo = this.data.accusedInfo;
     let categoryIndex = this.data.categoryIndex;
-    if(accuserInfo.accuser[0].accuserName == null ){
+    if (accuserInfo.accuser[0].accuserName == null) {
       wx.hideToast();
       wx.showModal({
         title: '提示',
@@ -106,8 +108,8 @@ Page({
         showCancel: false
       })
       return;
-    }    
-    else if (e.detail.value.dealer == null || e.detail.value.dealer == ""){
+    }
+    else if (e.detail.value.dealer == null || e.detail.value.dealer == "") {
       wx.hideToast();
       wx.showModal({
         title: '提示',
@@ -116,7 +118,7 @@ Page({
       })
       return;
     }
-    else{
+    else {
       var options = {
         url: config.serverUrl + "api-case/add.do",
         data: {
@@ -141,12 +143,12 @@ Page({
               title: '提示',
               content: res.data.msg,
               showCancel: false,
-              success(r){
+              success(r) {
                 if (r.confirm) {
                   that.init();
                   return;
-                }   
-              }          
+                }
+              }
             })
           }
           else {
@@ -180,13 +182,13 @@ Page({
     this.setData({
       accuserInfo: accuserInfo,
       accusedInfo: accusedInfo,
-      categoryIndex : 0,
+      categoryIndex: 0,
       accuserRoleIndex: 0,
       accusedRoleIndex: 1,
       dealer: "",
       remarks: ""
     });
-  },  
+  },
   //加原告
   addAccuser: function (e) {
     let accuserInfo = this.data.accuserInfo;
@@ -201,15 +203,15 @@ Page({
   //减原告
   deleteAccuser: function (e) {
     let accuserInfo = this.data.accuserInfo;
-    if(accuserInfo.accuser.length > 1){
+    if (accuserInfo.accuser.length > 1) {
       accuserInfo.accuser.pop(new accuserDetail());
       this.setData({
         accuserInfo: accuserInfo
-      });      
+      });
     }
   },
   //设置原告姓名
-  setAccuser : function(e){
+  setAccuser: function (e) {
     let index = parseInt(e.currentTarget.id.replace("accuser-", ""));
     let accuser = e.detail.value;
     let accuserInfo = this.data.accuserInfo;
@@ -219,7 +221,7 @@ Page({
     });
   },
   //改原告身份
-  bindTypeChangeA : function(e){
+  bindTypeChangeA: function (e) {
     // 保留旧方法（兼容旧结构），当前 UI 已不再使用
   },
   //加对方当事人
@@ -236,31 +238,31 @@ Page({
   //减原告
   deleteAccused: function (e) {
     let accusedInfo = this.data.accusedInfo;
-    if(accusedInfo.accused.length > 1){
+    if (accusedInfo.accused.length > 1) {
       accusedInfo.accused.pop(new accusedDetail());
       this.setData({
         accusedInfo: accusedInfo
-      });      
+      });
     }
-  },  
+  },
   //设置被告姓名
-  setAccused : function(e){
+  setAccused: function (e) {
     let index = parseInt(e.currentTarget.id.replace("accused-", ""));
     let accused = e.detail.value;
     let accusedInfo = this.data.accusedInfo;
     accusedInfo.accused[index].accusedName = accused;
     this.setData({
       accusedInfo: accusedInfo
-    });    
+    });
   },
   //改被告身份
-  bindTypeChangeD : function(e){
+  bindTypeChangeD: function (e) {
     // 保留旧方法（兼容旧结构），当前 UI 已不再使用
   },
-  bindPickerChange : function(e){
+  bindPickerChange: function (e) {
     this.setData({
       categoryIndex: e.detail.value
-    })    
+    })
   },
 
   // 顶部委托人身份选择，统一设置所有委托人的 typeid
@@ -302,50 +304,65 @@ Page({
   },
 
 
-  resetForm : function(e){
+  resetForm: function (e) {
     var accuserInfo = new AccuserInfo();
     accuserInfo.accuser.push(new accuserDetail());
     var accusedInfo = new AccusedInfo();
-    accusedInfo.accused.push(new accusedDetail());    
+    accusedInfo.accused.push(new accusedDetail());
     this.setData({
-      code:"",
-      categoryIndex : 0,
+      code: "",
+      categoryIndex: 0,
       accuserRoleIndex: 0,
       accusedRoleIndex: 0,
       accuserInfo: accuserInfo,
       accusedInfo: accusedInfo,
-    })  
+      dealer: "",
+      remarks: ""
+    })
   },
 
   // 删除单个委托人条目
   removeAccuserItem: function (e) {
-    var index = Number(e.currentTarget.dataset.index);
+    var targetId = e.currentTarget.dataset.id;
     let accuserInfo = this.data.accuserInfo;
     if (!accuserInfo || !accuserInfo.accuser) return;
-    if (accuserInfo.accuser.length > 1) {
-      accuserInfo.accuser.splice(index, 1);
-    } else {
-      accuserInfo.accuser[0] = new accuserDetail();
+
+    // 基于ID查找并删除
+    var newArray = accuserInfo.accuser.filter(function (item) {
+      return item.id !== targetId;
+    });
+
+    // 如果只剩一个且为空，替换为空对象
+    if (newArray.length === 0) {
+      newArray.push(new accuserDetail());
     }
+
     this.setData({
-      accuserInfo: accuserInfo
+      accuserInfo: { accuser: newArray }
     });
   },
 
   // 删除单个对方当事人条目
   removeAccusedItem: function (e) {
-    var index = Number(e.currentTarget.dataset.index);
+    var targetId = e.currentTarget.dataset.id;
     let accusedInfo = this.data.accusedInfo;
     if (!accusedInfo || !accusedInfo.accused) return;
-    if (accusedInfo.accused.length > 1) {
-      accusedInfo.accused.splice(index, 1);
-    } else {
-      accusedInfo.accused[0] = new accusedDetail();
+
+    // 基于ID查找并删除
+    var newArray = accusedInfo.accused.filter(function (item) {
+      return item.id !== targetId;
+    });
+
+    // 如果只剩一个且为空，替换为空对象
+    if (newArray.length === 0) {
+      newArray.push(new accusedDetail());
     }
+
     this.setData({
-      accusedInfo: accusedInfo
+      accusedInfo: { accused: newArray }
     });
   },
+
   /**
    * 生命周期函数--监听页面加载
    */

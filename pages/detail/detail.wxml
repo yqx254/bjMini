@@ -1,106 +1,191 @@
-<view class="page__bd page__bd_spacing">
+<view class="page-input">
     <form bindsubmit="addInfo">
-        <view class="weui-cells__title">案件详情</view>
-        <view class="weui-cells weui-cells_after-title">
-            <view class="weui-cell ">
-                <view class="weui-cell__hd">
-                    <view class="weui-label" >案号:</view>                                                           
-                </view>                
-                <view class="weui-cell__hd">
-                    <input class="weui-input" value="{{code}}" disabled="true"/>
-                </view>
-            </view>
-        </view>
-        <view class="weui-cells weui-cells_after-title">
-            <view class="weui-cell" >  
-                <picker bindchange="bindPickerChange" value="{{categoryIndex}}" range="{{categoryMap}}" range-key="name" data-id='{{categoryMap[categoryIndex].id}}' mode = "selector">  
-                    <view class="picker">  
-                    类别：{{categoryMap[categoryIndex].name}}  
-                    </view>  
-                </picker>  
-            </view>   
-        </view>         
-        <view class="weui-cells weui-cells_after-title">
-            <view class="weui-cell ">
-                <view class="weui-cell__hd">
-                    <view class="weui-label" >委托人:</view>
-                </view>        
-                <button class="mini-btn" size="mini" type="primary" bindtap="addAccuser">添加</button>
-                <button class="mini-btn" size="mini" type="warn" bindtap="deleteAccuser">删除</button>
-            </view>
-            <view wx:for="{{accuserInfo.accuser}}" wx:key="key" class="forItemBorder">
-                <view class="container"> </view>
-                <view class="weui-cell weui-cell_input">
-                    <view class="weui-cell__bd">
-                        <input class="weui-input" id="accuser-{{index}}" value="{{item.accuserName}}" bindinput="setAccuser" placeholder="请输入姓名" />
+        <!-- 案件类别卡片 -->
+        <view class="card card--category">
+            <view class="card__header">
+                <view class="card__title">案件类别</view>
+                <picker
+                    bindchange="bindPickerChange"
+                    value="{{categoryIndex}}"
+                    range="{{categoryMap}}"
+                    range-key="name"
+                    data-id="{{categoryMap[categoryIndex].id}}"
+                    mode="selector"
+                >
+                    <view class="card__selector">
+                        <text class="card__selector-text">{{categoryMap[categoryIndex].name}}</text>
+                        <text class="card__selector-arrow">▼</text>
                     </view>
-                    <picker bindchange="bindTypeChangeA" id="accuserType-{{index}}" value="{{item.typeid}}" range="{{typeMap}}" range-key="name" data-id='{{typeMap[item.typeid].id}}' mode = "selector">  
-                        <view class="picker">  
-                       身份：{{typeMap[item.typeid].name}}
-                        </view>  
-                    </picker>                    
-                </view>                
+                </picker>
             </view>
-            <view wx:if="{{categoryIndex == 0 || categoryIndex == 2}}" class="weui-cell ">
-                <view class="weui-cell__hd">
-                    <view class="weui-label" >对方当事人:</view>
-                </view>        
-                <button class="mini-btn" size="mini" type="primary" bindtap="addAccused">添加</button>
-                <button class="mini-btn" size="mini" type="warn" bindtap="deleteAccused">删除</button>                
-            </view>            
-        <view wx:if="{{categoryIndex == 0 || categoryIndex == 2}}" wx:for="{{accusedInfo.accused}}" wx:key="key" class="forItemBorder">
-            <view class="container"> </view>
-            <view class="weui-cell weui-cell_input">            
-                <view class="weui-cell__bd">
-                    <input class="weui-input"  id="accused-{{index}}" value="{{item.accusedName}}" bindinput="setAccused" placeholder="请输入姓名" />
+            <view class="case-tabs">
+                <view
+                    wx:for="{{categoryMap}}"
+                    wx:key="id"
+                    data-index="{{index}}"
+                    bindtap="tapCategory"
+                    class="case-tab {{index == categoryIndex ? 'case-tab--active' : ''}}"
+                >
+                    {{item.name}}
                 </view>
-                <picker bindchange="bindTypeChangeD" id="accusedType-{{index}}" value="{{item.typeid}}" range="{{typeMap}}" range-key="name" data-id='{{typeMap[item.typeid].id}}' mode = "selector">  
-                    <view class="picker">  
-                    身份：{{typeMap[item.typeid].name}}
-                    </view>  
-                </picker>                        
-            </view>            
-        </view>
-        <view class="weui-cell ">
-            <view class="weui-cell__hd">
-                <view class="weui-label" >承办人:</view>
-            </view>        
-            <view class="weui-cell__bd">
-                <input class="weui-input" name="dealer" value="{{dealer}}" placeholder="请输入承办人" />
             </view>
-        </view> 
+        </view>
 
-        <!-- <view wx:if="{{categoryIndex == 3}}" class="weui-cell ">
-            <view class="weui-cell__hd">
-                <view class="weui-label" >开始时间:</view>
-            </view>        
-        </view>
-        <view wx:if="{{categoryIndex == 3}}" class="weui-cell weui-cell_input">
-            <view class="weui-cell__bd">
-                <input class="weui-input" name="startTime" placeholder="请输入开始时间" />
+        <!-- 委托人卡片 -->
+        <view class="card">
+            <view class="card__header card__header--with-role">
+                <view class="card__title">
+                    委托人
+                    <text class="card__badge">{{accuserInfo.accuser.length}}</text>
+                </view>
+                <view class="card__header-right">
+                    <picker
+                        bindchange="bindTypeChangeA"
+                        value="{{accuserRoleIndex}}"
+                        range="{{typeMap}}"
+                        range-key="name"
+                        mode="selector"
+                    >
+                        <view class="card__selector">
+                            <text class="card__selector-text">{{typeMap[accuserRoleIndex].name}}</text>
+                            <text class="card__selector-arrow">▼</text>
+                        </view>
+                    </picker>
+                    <button class="card__action card__action--add" size="mini" type="default" plain bindtap="addAccuser">
+                        + 添加
+                    </button>
+                </view>
             </view>
-        </view> 
-        <view wx:if="{{categoryIndex == 3}}" class="weui-cell ">
-            <view class="weui-cell__hd">
-                <view class="weui-label" >结束时间:</view>
-            </view>        
-        </view>
-        <view wx:if="{{categoryIndex == 3}}" class="weui-cell weui-cell_input">
-            <view class="weui-cell__bd">
-                <input class="weui-input" name="endTime" placeholder="请输入结束时间" />
+
+            <view
+                wx:for="{{accuserInfo.accuser}}"
+                wx:key="id"
+                class="person-item"
+            >
+                <view class="person-item__avatar">
+                    <image class="person-item__avatar-img" src="/assets/icon/personadd.png" mode="aspectFit"></image>
+                </view>
+                <view class="person-item__body">
+                    <input
+                        class="person-item__input"
+                        id="accuser-{{index}}"
+                        value="{{item.accuserName}}"
+                        bindinput="setAccuser"
+                        placeholder="请输入姓名"
+                    />
+                </view>
+                <view class="person-item__tag person-item__tag--readonly">
+                    {{typeMap[accuserRoleIndex].name}}
+                </view>
+                <view class="person-item__delete" data-id="{{item.id}}" bindtap="removeAccuserItem">
+                    <image class="person-item__delete-img" src="/assets/icon/delete.png" mode="aspectFit"></image>
+                </view>
             </view>
-        </view> -->
-        <view class="weui-cell ">
-          <view class="weui-cell__hd">
-            <view class="weui-label" >备注:</view>
-          </view>
-            <view class="weui-cell__hd">                
-                <textarea name="remarks" value="{{remarks}}" placeholder="请录入备注" maxlength="200" auto-height="true"/>
-            </view>        
-        </view>                                                     
         </view>
-      <view class="weui-btn-area">
-          <button class="weui-btn" form-type="submit" type="primary">保存</button>
-      </view>        
+
+        <!-- 对方当事人卡片（部分案件类别显示） -->
+        <view wx:if="{{categoryIndex == 0 || categoryIndex == 2}}" class="card">
+            <view class="card__header card__header--with-role">
+                <view class="card__title">
+                    对方当事人
+                    <text class="card__badge">{{accusedInfo.accused.length}}</text>
+                </view>
+                <view class="card__header-right">
+                    <picker
+                        bindchange="bindTypeChangeD"
+                        value="{{accusedRoleIndex}}"
+                        range="{{typeMap}}"
+                        range-key="name"
+                        mode="selector"
+                    >
+                        <view class="card__selector">
+                            <text class="card__selector-text">{{typeMap[accusedRoleIndex].name}}</text>
+                            <text class="card__selector-arrow">▼</text>
+                        </view>
+                    </picker>
+                    <button class="card__action card__action--add" size="mini" type="default" plain bindtap="addAccused">
+                        + 添加
+                    </button>
+                </view>
+            </view>
+
+            <view
+                wx:for="{{accusedInfo.accused}}"
+                wx:key="id"
+                class="person-item"
+            >
+
+                <view class="person-item__avatar">
+                    <image class="person-item__avatar-img" src="/assets/icon/personadd.png" mode="aspectFit"></image>
+                </view>
+                <view class="person-item__body">
+                    <input
+                        class="person-item__input"
+                        id="accused-{{index}}"
+                        value="{{item.accusedName}}"
+                        bindinput="setAccused"
+                        placeholder="请输入姓名"
+                    />
+                </view>
+                <view class="person-item__tag person-item__tag--readonly">
+                    {{typeMap[accusedRoleIndex].name}}
+                </view>
+                <view class="person-item__delete" data-id="{{item.id}}" bindtap="removeAccusedItem">
+                    <image class="person-item__delete-img" src="/assets/icon/delete.png" mode="aspectFit"></image>
+                </view>
+            </view>
+        </view>
+
+        <!-- 承办人卡片 -->
+        <view class="card card--simple">
+            <view class="card__row">
+                <view class="card__row-label">承办人</view>
+                <view class="card__row-content">
+                    <input
+                        class="card__row-input"
+                        name="dealer"
+                        value="{{dealer}}"
+                        placeholder="请输入承办人"
+                    />
+                </view>
+            </view>
+        </view>
+
+        <!-- 备注卡片 -->
+        <view class="card card--simple">
+            <view class="card__row card__row--textarea">
+                <view class="card__row-label">备注</view>
+                <view class="card__row-content">
+                    <textarea
+                        class="card__row-textarea"
+                        name="remarks"
+                        value="{{remarks}}"
+                        placeholder="请输入备注信息"
+                        maxlength="200"
+                        auto-height="true"
+                    />
+                </view>
+            </view>
+        </view>
+
+        <!-- 案号展示卡片 -->
+        <view wx:if="{{code}}" class="card card--code">
+            <view class="card__row">
+                <view class="card__row-label">案号</view>
+                <view class="card__row-content">
+                    <input class="card__row-input" value="{{code}}" disabled="true" />
+                </view>
+            </view>
+        </view>
+
+        <!-- 底部按钮区 -->
+        <view class="page-input__footer">
+            <button class="btn btn--ghost" type="default" bindtap="resetForm">
+                撤销修改
+            </button>
+            <button class="btn btn--primary" form-type="submit" type="primary">
+                保存
+            </button>
+        </view>
     </form>
 </view>

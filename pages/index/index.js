@@ -12,7 +12,8 @@ Page({
     modalHidden: true,
     modalContent: '',
     inputs: {},
-    showPassword: false
+    showPassword: false,
+    scrollIntoViewId: ''
   },
 
   tapLoading: function () {
@@ -156,5 +157,19 @@ Page({
     this.setData({
       showPassword: !this.data.showPassword
     })
+  },
+
+  onInputFocus: function () {
+    // 聚焦时滚动到按钮区域，尽量避免被键盘遮挡
+    this.setData({
+      scrollIntoViewId: 'login-btn-anchor'
+    });
+  },
+
+  onInputBlur: function () {
+    // 失焦后恢复
+    this.setData({
+      scrollIntoViewId: ''
+    });
   }
 })

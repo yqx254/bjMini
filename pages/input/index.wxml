@@ -39,9 +39,9 @@
                         range-key="name"
                         mode="selector"
                     >
-                        <view class="card__role-selector">
-                            <text class="card__role-label">{{typeMap[accuserRoleIndex].name}}</text>
-                            <text class="card__role-arrow">▼</text>
+                        <view class="card__selector">
+                            <text class="card__selector-text">{{typeMap[accuserRoleIndex].name}}</text>
+                            <text class="card__selector-arrow">▼</text>
                         </view>
                     </picker>
                     <button class="card__action card__action--add" size="mini" type="default" plain bindtap="addAccuser">+ 添加</button>
@@ -50,7 +50,7 @@
 
             <view
                 wx:for="{{accuserInfo.accuser}}"
-                wx:key="key"
+                wx:key="id"
                 class="person-item"
             >
                 <view class="person-item__avatar">
@@ -68,7 +68,7 @@
                 <view class="person-item__tag person-item__tag--readonly">
                     {{typeMap[accuserRoleIndex].name}}
                 </view>
-                <view class="person-item__delete" data-index="{{index}}" bindtap="removeAccuserItem">
+                <view class="person-item__delete" data-id="{{item.id}}" bindtap="removeAccuserItem">
                     <image class="person-item__delete-img" src="/assets/icon/delete.png" mode="aspectFit"></image>
                 </view>
             </view>
@@ -89,9 +89,9 @@
                         range-key="name"
                         mode="selector"
                     >
-                        <view class="card__role-selector">
-                            <text class="card__role-label">{{typeMap[accusedRoleIndex].name}}</text>
-                            <text class="card__role-arrow">▼</text>
+                        <view class="card__selector">
+                            <text class="card__selector-text">{{typeMap[accusedRoleIndex].name}}</text>
+                            <text class="card__selector-arrow">▼</text>
                         </view>
                     </picker>
                     <button class="card__action card__action--add" size="mini" type="default" plain bindtap="addAccused">+ 添加</button>
@@ -100,7 +100,7 @@
 
             <view
                 wx:for="{{accusedInfo.accused}}"
-                wx:key="key"
+                wx:key="id"
                 class="person-item"
             >
                 <view class="person-item__avatar">
@@ -118,7 +118,7 @@
                 <view class="person-item__tag person-item__tag--readonly">
                     {{typeMap[accusedRoleIndex].name}}
                 </view>
-                <view class="person-item__delete" data-index="{{index}}" bindtap="removeAccusedItem">
+                <view class="person-item__delete" data-id="{{item.id}}" bindtap="removeAccusedItem">
                     <image class="person-item__delete-img" src="/assets/icon/delete.png" mode="aspectFit"></image>
                 </view>
             </view>

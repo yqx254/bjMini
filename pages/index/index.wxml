@@ -1,5 +1,5 @@
 <!--index.wxml-->
-<view class="page">
+<scroll-view class="page" scroll-y="true" scroll-into-view="{{scrollIntoViewId}}">
     <loading hidden="{{loadingHidden}}" bindchange="loadingChange" bindtap="tapLoading">
         加载中...
     </loading>
@@ -12,8 +12,7 @@
             <view class="login-header__logo">
                 <image class="login-header__logo-img" src="/assets/img/logo.png" mode="aspectFit" />
             </view>
-            <view class="login-header__title">欢迎回来</view>
-            <view class="login-header__subtitle">冰鉴案件管理系统</view>
+            <view class="login-header__subtitle">案件查询管理</view>
         </view>
     </view>
 
@@ -35,6 +34,8 @@
                     placeholder="请输入账号"
                     value="{{inputs['userName']}}"
                     bindinput="inputChange"
+                    bindfocus="onInputFocus"
+                    bindblur="onInputBlur"
                 />
             </view>
 
@@ -50,6 +51,8 @@
                     placeholder="请输入登录密码"
                     value="{{inputs['password']}}"
                     bindinput="inputChange"
+                    bindfocus="onInputFocus"
+                    bindblur="onInputBlur"
                 />
                 <!-- 密码显隐切换 -->
                 <view class="login-field__password-toggle" bindtap="togglePasswordVisible">
@@ -57,11 +60,11 @@
                 </view>
             </view>
 
-            <view class="btn-area">
+            <view class="btn-area" id="login-btn-anchor">
                 <view class="button-wrapper">
                     <button type="primary" formType="submit" class="primary">登录</button>
                 </view>
             </view>
         </form>
     </view>
-</view>
+</scroll-view>

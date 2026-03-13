@@ -1,24 +1,75 @@
-<view class="content" scroll-y="true">
-  <view class="search-bar">
-    <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
-    <input name="keyword" placeholder="输入委托人姓名或案号进行查询" bindinput="inputKeyword"/>
-    <button type="primary" size="mini" bindtap="query">查询</button>
-  </view>  
+<view class="page-search">
 
-  <view class="header-bg"></view>    
-  <view class="book-content">
-    <view wx:for="{{infoList}}" id="{{item.id}}" bindtap="caseDetail">
-      <view class="book-list">
-        <view class="book-info">
-          <view class="book-info-style ">
-            <view wx:if="{{item.status == 1}}" class="col-4 font-break">案号:{{item.caseCode}}</view>
-            <view wx:if="{{item.status == 2}}" class="col-4 font-break">案号:{{item.caseCode}}(已结案)</view>
-            <view  class="font-break">委托人:{{item.clientNameShow}}</view>
-            <view wx:if="{{item.opponentName != null && item.opponentName != '' }}" class="font-break">对方当事人:{{item.opponentNameShow}}</view>            
-            <view class="col-4 font-break">录入时间:{{item.createdAtStr}}</view>      
-          </view>
-        </view>
+  <!-- 搜索条 -->
+  <view class="search-bar">
+    <view class="search-bar__input-wrap">
+      <view class="search-bar__icon">
+        <image class="search-bar__icon-img" src="/assets/icon/search.png" mode="aspectFit"></image>
+      </view>
+      <input
+        class="search-bar__input"
+        name="keyword"
+        placeholder="输入委托人姓名或案号"
+        value="{{keyword}}"
+        bindinput="inputKeyword"
+        confirm-type="search"
+        bindconfirm="query"
+      />
+      <view wx:if="{{keyword}}" class="search-bar__clear" bindtap="clearKeyword">
+        <image class="search-bar__icon-img" src="/assets/icon/cancel.png" mode="aspectFit"></image>
       </view>
     </view>
+    <button class="search-bar__button" type="primary" size="default" bindtap="query">
+      查询
+    </button>
   </view>
+
+  <!-- 结果统计 -->
+  <view class="result-summary" wx:if="{{infoList.length > 0}}">
+    {{infoList.length}} 条结果
+  </view>
+
+  <!-- 结果列表 -->
+  <scroll-view scroll-y="true" class="result-list">
+    <view
+      wx:for="{{infoList}}"
+      wx:key="id"
+      id="{{item.id}}"
+      bindtap="caseDetail"
+      class="case-card"
+    >
+      <view class="case-card__icon">
+        <image class="search-bar__icon-img" src="/assets/icon/document.png" mode="aspectFit"></image>
+      </view>
+      <view class="case-card__body">
+        <view class="case-card__row case-card__row--top">
+          <view class="case-card__code">
+            {{item.caseCode}}
+          </view>
+          <view class="case-card__badge">
+            {{item.categoryShow}}
+          </view>
+        </view>
+        <view class="case-card__row case-card__row--meta">
+          <view class="case-card__date">
+            {{item.createdAtStr}}
+          </view>
+          <view wx:if="{{item.status == 2}}" class="case-card__status">
+            已结案
+          </view>
+        </view>
+        <view class="case-card__row">
+          <view class="case-card__label">委托人</view>
+          <view class="case-card__value">{{item.clientNameShow}}</view>
+        </view>
+        <view class="case-card__row" wx:if="{{item.opponentName != null && item.opponentName != '' }}">
+          <view class="case-card__label">对方当事人</view>
+          <view class="case-card__value">{{item.opponentNameShow}}</view>
+        </view>
+      </view>
+      <view class="case-card__arrow">
+        <image class="search-bar__icon-img" src="/assets/img/icon-arrowdown.png" mode="aspectFit"></image>
+      </view>
+    </view>
+  </scroll-view>
 </view>
